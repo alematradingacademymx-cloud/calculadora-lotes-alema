@@ -31,24 +31,29 @@ st.divider()
 # --- SECCIÓN 1: PARÁMETROS DE LA OPERACIÓN ---
 st.subheader("⚙️ Parámetros de la Cuenta y Riesgo")
 
+# Par de Divisas
 par_activo = st.text_input("Par de Divisas / Activo (Opcional)", value="EUR/USD").strip().upper()
 
-# Detección si es un par con JPY para ajustar el valor por defecto del pip
+# Detección de Par JPY
 es_jpy = "JPY" in par_activo
-valor_pip_defecto = 7.0 if es_jpy else 10.0
+valor_pip_sugerido = 7.0 if es_jpy else 10.0
 
 col1, col2 = st.columns(2)
 
 with col1:
     balance = st.number_input("Balance de la Cuenta ($)", value=250.0, step=10.0)
-    riesgo_pct = st.number_input("Porcentaje de Riesgo (%)", value=5.0, step=0.5)
+    riesgo_pct = st.number_input("Porcentaje de Riesgo (%)", value=1.0, step=0.5)
 
 with col2:
-    sl_pips = st.number_input("Tamaño del Stop Loss (Pips)", value=10.0, step=1.0)
-    valor_pip = st.number_input("Valor del Pip por Lote Estándar ($)", value=valor_pip_defecto, step=0.5)
+    sl_pips = st.number_input("Tamaño del Stop Loss (Pips)", value=15.0, step=1.0)
+    # Se actualiza automáticamente la casilla según si es JPY o no
+    valor_pip = st.number_input("Valor del Pip por Lote Estándar ($)", value=valor_pip_sugerido, step=0.5)
 
+# Cartel informativo dinámico
 if es_jpy:
-    st.info("💡 **Par JPY Detectado:** Ajustado el valor de pip promedio sugerido a $7.0 USD.")
+    st.info("💡 **Par JPY Detectado:** Valor del pip ajustado automáticamente a **$7.00 USD** (pips cotizados en Yenes).")
+else:
+    st.info("💡 **Par Estándar Detectado:** Valor del pip ajustado automáticamente a **$10.00 USD**.")
 
 # --- SECCIÓN 2: CÁLCULOS MATEMÁTICOS ---
 dinero_arriesgar = balance * (riesgo_pct / 100.0)
