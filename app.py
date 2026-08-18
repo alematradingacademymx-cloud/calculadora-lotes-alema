@@ -1,9 +1,9 @@
 import streamlit as st
 
-# Configuración de página con estética de ALEMA Trading Academy
+# Configuración de página
 st.set_page_config(page_title="ALEMA Trading Academy - Calculadora de Lotes", page_icon="📊", layout="centered")
 
-# Estilos CSS personalizados
+# Estilos CSS
 st.markdown("""
     <style>
     .main-title {
@@ -31,10 +31,15 @@ st.divider()
 # --- SECCIÓN 1: PARÁMETROS DE LA OPERACIÓN ---
 st.subheader("⚙️ Parámetros de la Cuenta y Riesgo")
 
-# Par de Divisas
 par_activo = st.text_input("Par de Divisas / Activo (Opcional)", value="EUR/USD").strip().upper()
 
-# Detección de Par JPY
+# Limpiar el nombre del par para el enlace de TradingView
+symbol_tv = par_activo.replace("/", "").replace("-", "").replace(" ", "")
+tv_url = f"https://es.tradingview.com/chart/?symbol=FX:{symbol_tv}"
+
+# Botón dinámico para abrir el gráfico
+st.link_button(f"📈 Ver Gráfico de {par_activo} en TradingView", tv_url)
+
 es_jpy = "JPY" in par_activo
 valor_pip_sugerido = 7.0 if es_jpy else 10.0
 
@@ -46,12 +51,10 @@ with col1:
 
 with col2:
     sl_pips = st.number_input("Tamaño del Stop Loss (Pips)", value=15.0, step=1.0)
-    # Se actualiza automáticamente la casilla según si es JPY o no
     valor_pip = st.number_input("Valor del Pip por Lote Estándar ($)", value=valor_pip_sugerido, step=0.5)
 
-# Cartel informativo dinámico
 if es_jpy:
-    st.info("💡 **Par JPY Detectado:** Valor del pip ajustado automáticamente a **$7.00 USD** (pips cotizados en Yenes).")
+    st.info("💡 **Par JPY Detectado:** Valor del pip ajustado automáticamente a **$7.00 USD**.")
 else:
     st.info("💡 **Par Estándar Detectado:** Valor del pip ajustado automáticamente a **$10.00 USD**.")
 
