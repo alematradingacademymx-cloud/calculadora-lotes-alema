@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
 # Configuración de página
 st.set_page_config(page_title="ALEMA Trading Academy - Calculadora de Lotes", page_icon="📊", layout="centered")
@@ -8,10 +9,12 @@ st.markdown("""
     <style>
     .main-title {
         text-align: center;
-        font-size: 28px;
-        font-weight: bold;
-        color: #1E293B;
+        font-size: 32px;
+        font-weight: 800;
+        color: #FF6B00; /* Color Naranja Institucional */
+        margin-top: 10px;
         margin-bottom: 0px;
+        letter-spacing: 1px;
     }
     .sub-title {
         text-align: center;
@@ -21,6 +24,44 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
+# --- CARRUSEL SUPERIOR TIPO TICKER (Fondo Naranja / Letras Blancas) ---
+ticker_html = """
+<!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+  {
+  "symbols": [
+    {"proName": "FX_IDC:EURUSD", "title": "EUR/USD"},
+    {"proName": "FX_IDC:GBPUSD", "title": "GBP/USD"},
+    {"proName": "FX_IDC:USDJPY", "title": "USD/JPY"},
+    {"proName": "FX_IDC:AUDUSD", "title": "AUD/USD"},
+    {"proName": "FX_IDC:USDCAD", "title": "USD/CAD"},
+    {"proName": "FX_IDC:USDCHF", "title": "USD/CHF"},
+    {"proName": "BITSTAMP:BTCUSD", "title": "BTC/USD"}
+  ],
+  "showSymbolLogo": true,
+  "isTransparent": false,
+  "displayMode": "adaptive",
+  "colorTheme": "dark",
+  "locale": "es"
+}
+  </script>
+</div>
+<style>
+  /* Personalización del carrusel a Naranja ALEMA */
+  .tradingview-widget-container {
+    background-color: #FF6B00 !important;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+</style>
+<!-- TradingView Widget END -->
+"""
+
+# Renderizado de la franja carrusel ajustado a altura 78px para celulares
+components.html(ticker_html, height=78)
 
 # Encabezado principal
 st.markdown('<div class="main-title">ALEMA TRADING ACADEMY</div>', unsafe_allow_html=True)
@@ -36,9 +77,11 @@ par_activo = st.text_input("Par de Divisas / Activo (Opcional)", value="EUR/USD"
 # Limpiar el nombre del par para el enlace de TradingView
 symbol_tv = par_activo.replace("/", "").replace("-", "").replace(" ", "")
 tv_url = f"https://es.tradingview.com/chart/?symbol=FX:{symbol_tv}"
+investing_url = "https://es.investing.com/economic-calendar/"
 
-# Botón dinámico para abrir el gráfico
-st.link_button(f"📈 Ver Gráfico de {par_activo} en TradingView", tv_url)
+# Botones de herramientas externas
+st.link_button("📈 Ver Gráfico en TradingView", tv_url)
+st.link_button("📅 Ver Calendario Económico (Investing)", investing_url)
 
 es_jpy = "JPY" in par_activo
 valor_pip_sugerido = 7.0 if es_jpy else 10.0
